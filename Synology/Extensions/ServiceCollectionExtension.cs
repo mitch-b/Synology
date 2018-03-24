@@ -21,9 +21,18 @@ namespace Synology
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 
+            var defaultHttpClient = new SynologyHttpClient()
+            {
+                DefaultRequestHeaders =
+                {
+                    ExpectContinue = false
+                }
+            };
+
             services.AddOptions();
             services.AddSingleton<ISynologyConnectionSettings, SynologyConnectionSettings>();
             services.AddSingleton<SidContainer, SidContainer>();
+            services.AddSingleton<SynologyHttpClient>(defaultHttpClient);
             services.AddTransient<ISynologyConnection, SynologyConnection>();
 
             configure(new SynologyBuilder(services));
